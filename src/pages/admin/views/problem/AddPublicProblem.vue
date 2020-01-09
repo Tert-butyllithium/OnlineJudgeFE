@@ -82,17 +82,12 @@
         })
       },
       handleAddProblem (problemID) {
-        this.$prompt('Please input display id for the contest problem', 'confirm').then(({value}) => {
-          let data = {
-            problem_id: problemID,
-            contest_id: this.contestID,
-            display_id: value
-          }
-          api.addProblemFromPublic(data).then(() => {
-            this.$emit('on-change')
-          }, () => {
-          })
-        }, () => {
+        let data = {
+          problem_id: problemID,
+          contest_id: this.contestID
+        }
+        api.addProblemFromPublic(data).then(() => {
+          this.$emit('on-change')
         })
       }
     },

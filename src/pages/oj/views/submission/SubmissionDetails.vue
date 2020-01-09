@@ -4,7 +4,7 @@
       <Alert :type="status.type" showIcon>
         <span class="title">{{status.statusName}}</span>
         <div slot="desc" class="content">
-          <template v-if="isCE">
+          <template v-if="isCE||isRE" >
             <pre>{{submission.statistic_info.err_info}}</pre>
           </template>
           <template v-else>
@@ -168,6 +168,9 @@
       },
       isCE () {
         return this.submission.result === -2
+      },
+      isRE () {
+        return this.submission.result === 4
       },
       isAdminRole () {
         return this.$store.getters.isAdminRole

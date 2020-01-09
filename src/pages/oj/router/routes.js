@@ -14,7 +14,8 @@ import {
   ResetPassword,
   SubmissionDetails,
   SubmissionList,
-  UserHome
+  UserHome,
+  Clarification
 } from '../views'
 
 import * as Contest from '@oj/views/contest'
@@ -100,6 +101,11 @@ export default [
         name: 'contest-announcement-list',
         path: 'announcements',
         component: Announcements
+      },
+      {
+        name: 'contest-clarification-list',
+        path: 'clarification',
+        component: Clarification
       },
       {
         name: 'contest-rank',

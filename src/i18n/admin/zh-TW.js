@@ -98,6 +98,7 @@ export const m = {
   Contest_Rule_Type: '規則',
   Real_Time_Rank: '即時排名',
   Contest_Status: '狀態',
+  Frozen_time: 'Frozen Time (in minutes）',
   Allowed_IP_Ranges: '允許的 IP 範圍',
   CIDR_Network: 'CIDR Network',
   // Dashboard.vue

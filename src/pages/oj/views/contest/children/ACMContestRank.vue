@@ -9,8 +9,8 @@
           <p>
             <span>Menu</span>
             <i-switch v-model="showMenu"></i-switch>
-            <span>Chart</span>
-            <i-switch v-model="showChart"></i-switch>
+            <!-- <span>Chart</span>
+            <i-switch v-model="showChart"></i-switch> -->
           </p>
           <p>
             <span>Auto Refresh(10s)</span>
@@ -32,16 +32,23 @@
         </div>
       </Poptip>
     </div>
-    <div v-show="showChart" class="echarts">
+    <div v-show="false" class="echarts">
       <ECharts :options="options" ref="chart" auto-resize></ECharts>
     </div>
+    <div v-if="myRank.length" class="table" >
+      <Table ref="MyRank" class="auto-resize" :columns="myRankcolumns" :data="myRank" disabled-hover></Table>
+    </div>
+    <!-- <div v-if="false">
+      <Table ref="colors" class="auto-resize" :columns="problems" :data="colors" disabled-hover>  </Table>
+    </div> -->
     <Table ref="tableRank" class="auto-resize" :columns="columns" :data="dataRank" disabled-hover></Table>
     <Pagination :total="total"
                 :page-size.sync="limit"
                 :current.sync="page"
                 @on-change="getContestRankData"
                 @on-page-size-change="getContestRankData(1)"
-                show-sizer></Pagination>
+                show-sizer>
+    </Pagination>
   </Panel>
 </template>
 <script>
@@ -64,12 +71,15 @@
         total: 0,
         page: 1,
         contestID: '',
+        cnt: 1,
+        frozen: null,
+        staticColors: ['white', 'blue', 'green', 'orange', 'silver', 'red', 'pink', 'purple', 'yellow', 'black', 'glod'],
         columns: [
           {
             align: 'center',
             width: 60,
             render: (h, params) => {
-              return h('span', {}, params.index + (this.page - 1) * this.limit + 1)
+              return h('span', params.row.rank)
             }
           },
           {
@@ -86,7 +96,7 @@
                     this.$router.push(
                       {
                         name: 'user-home',
-                        query: {username: params.row.user.username}
+                        query: {username: params.row.user.id}
                       })
                   }
                 }
@@ -105,7 +115,68 @@
                     click: () => {
                       this.$router.push({
                         name: 'contest-submission-list',
-                        query: {username: params.row.user.username}
+                        query: {username: params.row.user.id}
+                      })
+                    }
+                  }
+                }, params.row.submission_number)
+              ])
+            }
+          },
+          {
+            title: 'Penalty',
+            align: 'center',
+            render: (h, params) => {
+              return h('span', this.parseTotalTime(params.row.total_time))
+            }
+          }
+        ],
+        myRankcolumns: [
+          {
+            align: 'center',
+            width: 60,
+            title: '#',
+            render: (h, params) => {
+              return h('span', params.row.rank)
+            }
+            // render: (h, params) => {
+            //   return h('span', {}, params.index + (this.page - 1) * this.limit + 1)
+            // }
+          },
+          {
+            title: 'User',
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                style: {
+                  display: 'inline-block',
+                  'max-width': '150px'
+                },
+                on: {
+                  click: () => {
+                    this.$router.push(
+                      {
+                        name: 'user-home',
+                        query: {username: params.row.user.id}
+                      })
+                  }
+                }
+              }, params.row.user.username)
+            }
+          },
+          {
+            title: 'AC / Total',
+            align: 'center',
+            width: 100,
+            render: (h, params) => {
+              return h('span', {}, [
+                h('span', {}, params.row.accepted_number + ' / '),
+                h('a', {
+                  on: {
+                    click: () => {
+                      this.$router.push({
+                        name: 'contest-submission-list',
+                        query: {username: params.row.user.id}
                       })
                     }
                   }
@@ -121,7 +192,12 @@
             }
           }
         ],
+        problems: [],
+        colors: [
+          { cellClassName: {} }
+        ],
         dataRank: [],
+        myRank: [],
         options: {
           title: {
             text: 'Top 10 Teams',
@@ -187,6 +263,7 @@
     mounted () {
       this.contestID = this.$route.params.contestID
       this.getContestRankData(1)
+      this.getContestMyRank()
       if (this.contestProblems.length === 0) {
         this.getContestProblems().then((res) => {
           this.addTableColumns(res.data.data)
@@ -250,10 +327,13 @@
             dataRank[i][problemID] = info[problemID]
             dataRank[i][problemID].ac_time = time.secondFormat(dataRank[i][problemID].ac_time)
             let status = info[problemID]
+            // console.log(status)
             if (status.is_first_ac) {
               cellClass[problemID] = 'first-ac'
             } else if (status.is_ac) {
               cellClass[problemID] = 'ac'
+            } else if (status.try_number > 0) {
+              cellClass[problemID] = 'pending'
             } else {
               cellClass[problemID] = 'wa'
             }
@@ -262,10 +342,36 @@
         })
         this.dataRank = dataRank
       },
+      applyToMyTable (data) {
+        let dataRank = JSON.parse(JSON.stringify(data))
+        // 从submission_info中取出相应的problem_id 放入到父object中,这么做主要是为了适应iview table的data格式
+        // 见https://www.iviewui.com/components/table
+        dataRank.forEach((rank, i) => {
+          let info = rank.submission_info
+          let cellClass = {}
+          Object.keys(info).forEach(problemID => {
+            dataRank[i][problemID] = info[problemID]
+            dataRank[i][problemID].ac_time = time.secondFormat(dataRank[i][problemID].ac_time)
+            let status = info[problemID]
+            if (status.is_first_ac) {
+              cellClass[problemID] = 'first-ac'
+            } else if (status.is_ac) {
+              cellClass[problemID] = 'ac'
+            } else if (status.try_number > 0) {
+              cellClass[problemID] = 'pending'
+            } else {
+              cellClass[problemID] = 'wa'
+            }
+          })
+          dataRank[i].cellClassName = cellClass
+        })
+        this.myRank = dataRank
+        // console.log(this.myRank)
+      },
       addTableColumns (problems) {
         // 根据题目添加table column
         problems.forEach(problem => {
-          this.columns.push({
+          var col = {
             align: 'center',
             key: problem.id,
             renderHeader: (h, params) => {
@@ -291,20 +397,59 @@
                 let status = params.row[problem.id]
                 let acTime, errorNumber
                 if (status.is_ac) {
-                  acTime = h('span', status.ac_time)
+                  let tmp = status.ac_time.split(':')
+                  // console.log(tmp)
+                  tmp = this.zfill(tmp[0]) + ':' + this.zfill(tmp[1]) + ':' + this.zfill(tmp[2])
+                  acTime = h('span', tmp)
                 }
                 if (status.error_number !== 0) {
-                  errorNumber = h('p', '(-' + status.error_number + ')')
+                  errorNumber = h('p', status.error_number + 1 + ' tries')
+                  if ((!status.is_ac)) {
+                    if (status.try_number !== 0) {
+                      errorNumber = h('p', status.error_number + ' + ' + status.try_number + ' tries')
+                    } else {
+                      errorNumber = h('p', status.error_number + ' ' + (status.error_number === 1 ? 'try' : 'tries'))
+                    }
+                  }
+                } else {
+                  errorNumber = h('p', 1 + ' try')
+                  if ((!status.is_ac) && status.try_number !== 0) {
+                    errorNumber = h('p', status.try_number + (status.try_number === 1 ? ' try' : ' tries'))
+                  }
                 }
                 return h('div', [acTime, errorNumber])
               }
             }
-          })
+          }
+          this.columns.push(col)
+          this.myRankcolumns.push(col)
+          let cc = {}
+          cc.key = col.key
+          cc.title = col.title
+          cc.renderHeader = col.renderHeader
+          this.problems.push(cc)
+          this.colors[0][cc.key] = ' '
+          this.colors[0].cellClassName[cc.key] = this.staticColors[this.cnt % this.staticColors.length]
+          this.cnt ++
+          console.log(cc)
+          // let p = { }
+          // p[col.key] = ' '
+          // p.cellClassName = 'wa'
+          // console.log(p)
+          // this.colors.push(p)
+          // console.log(this.colors)
         })
+      },
+      zfill (s) {
+        return s < 10 ? '0' + s : s
       },
       parseTotalTime (totalTime) {
         let m = moment.duration(totalTime, 's')
-        return [Math.floor(m.asHours()), m.minutes(), m.seconds()].join(':')
+        let b = Math.floor(m.days()) * 24
+        // console.log(Math.floor(b + m.hours()))
+        let res = [this.zfill(Math.floor(b + m.hours())), this.zfill(m.minutes()), this.zfill(m.seconds())].join(':')
+        // console.log(res)
+        return res
       },
       downloadRankCSV () {
         utils.downloadFile(`contest_rank?download_csv=1&contest_id=${this.$route.params.contestID}&force_refrash=${this.forceUpdate ? '1' : '0'}`)

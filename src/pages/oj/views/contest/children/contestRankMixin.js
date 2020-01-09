@@ -31,6 +31,11 @@ export default {
         this.applyToTable(res.data.data.results)
       })
     },
+    getContestMyRank () {
+      api.getContestMyRank(this.$route.params.contestID).then(res => {
+        this.applyToMyTable(res.data.data.results)
+      })
+    },
     handleAutoRefresh (status) {
       if (status === true) {
         this.refreshFunc = setInterval(() => {

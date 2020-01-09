@@ -1,5 +1,6 @@
 <template>
   <Row type="flex" :gutter="18">
+    <!-- <router-link to='./home' target='_blank'></router-link> -->
     <Col :span=19>
     <Panel shadow>
       <div slot="title">Problem List</div>
@@ -151,9 +152,9 @@
             key: 'submission_number'
           },
           {
-            title: 'AC Rate',
+            title: 'AC Number',
             render: (h, params) => {
-              return h('span', this.getACRate(params.row.accepted_number, params.row.submission_number))
+              return h('span', params.row.accepted_number)
             }
           }
         ],

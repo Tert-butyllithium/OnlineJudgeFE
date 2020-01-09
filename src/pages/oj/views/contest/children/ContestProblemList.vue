@@ -41,9 +41,9 @@
             key: 'submission_number'
           },
           {
-            title: 'AC Rate',
+            title: 'AC Number',
             render: (h, params) => {
-              return h('span', this.getACRate(params.row.accepted_number, params.row.submission_number))
+              return h('span', params.row.accepted_number)
             }
           }
         ],

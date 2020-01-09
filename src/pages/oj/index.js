@@ -4,6 +4,8 @@ import App from './App.vue'
 import router from './router'
 import store from '@/store'
 import i18n from '@/i18n'
+import Element from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import VueClipboard from 'vue-clipboard2'
 import VueAnalytics from 'vue-analytics'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
@@ -40,6 +42,7 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 Vue.use(iView, {locale})
+Vue.use(Element, {locale})
 
 Vue.use(VueClipboard)
 Vue.use(highlight)

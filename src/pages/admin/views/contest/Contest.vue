@@ -36,19 +36,24 @@
               <el-input v-model="contest.password" :placeholder="$t('m.Contest_Password')"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item :label="$t('m.Contest_Rule_Type')">
               <el-radio class="radio" v-model="contest.rule_type" label="ACM" :disabled="disableRuleType">ACM</el-radio>
               <el-radio class="radio" v-model="contest.rule_type" label="OI" :disabled="disableRuleType">OI</el-radio>
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
+          </el-col> -->
+          <!-- <el-col :span="8">
             <el-form-item :label="$t('m.Real_Time_Rank')">
               <el-switch
                 v-model="contest.real_time_rank"
                 active-color="#13ce66"
                 inactive-color="#ff4949">
               </el-switch>
+            </el-form-item>
+          </el-col> -->
+          <el-col :span="8">
+            <el-form-item :label="$t('m.Frozen_time')">
+               <el-input v-model="contest.frozen_time"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -60,7 +65,7 @@
               </el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item :label="$t('m.Allowed_IP_Ranges')">
               <div v-for="(range, index) in contest.allowed_ip_ranges" :key="index">
                 <el-row :gutter="20" style="margin-bottom: 15px">
@@ -74,10 +79,11 @@
                 </el-row>
               </div>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
-      <save @click.native="saveContest"></save>
+      <!-- <save @click.native="saveContest" :disabled="true></save> -->
+       <el-button type="primary" plain :disabled="!canSave()" @click.native="saveContest">Save</el-button>
     </Panel>
   </div>
 </template>
@@ -100,13 +106,14 @@
           description: '',
           start_time: '',
           end_time: '',
-          rule_type: 'ACM',
+          // rule_type: 'ACM',
           password: '',
-          real_time_rank: true,
-          visible: true,
-          allowed_ip_ranges: [{
-            value: ''
-          }]
+          // real_time_rank: true,
+          visible: false,
+          frozen_time: null
+          // allowed_ip_ranges: [{
+          //   value: ''
+          // }]
         }
       }
     },
@@ -114,26 +121,29 @@
       saveContest () {
         let funcName = this.$route.name === 'edit-contest' ? 'editContest' : 'createContest'
         let data = Object.assign({}, this.contest)
-        let ranges = []
-        for (let v of data.allowed_ip_ranges) {
-          if (v.value !== '') {
-            ranges.push(v.value)
-          }
-        }
-        data.allowed_ip_ranges = ranges
+        // let ranges = []
+        // for (let v of data.allowed_ip_ranges) {
+        //   if (v.value !== '') {
+        //     ranges.push(v.value)
+        //   }
+        // }
+        // data.allowed_ip_ranges = ranges
         api[funcName](data).then(res => {
           this.$router.push({name: 'contest-list', query: {refresh: 'true'}})
         }).catch(() => {
         })
       },
+      canSave () {
+        return this.contest.title !== '' && this.contest.description !== '' && this.contest.start_time !== '' && this.contest.end_time !== ''
+      },
       addIPRange () {
-        this.contest.allowed_ip_ranges.push({value: ''})
+        // this.contest.allowed_ip_ranges.push({value: ''})
       },
       removeIPRange (range) {
-        let index = this.contest.allowed_ip_ranges.indexOf(range)
-        if (index !== -1) {
-          this.contest.allowed_ip_ranges.splice(index, 1)
-        }
+        // let index = this.contest.allowed_ip_ranges.indexOf(range)
+        // if (index !== -1) {
+        //   this.contest.allowed_ip_ranges.splice(index, 1)
+        // }
       }
     },
     mounted () {
@@ -142,14 +152,14 @@
         this.disableRuleType = true
         api.getContest(this.$route.params.contestId).then(res => {
           let data = res.data.data
-          let ranges = []
-          for (let v of data.allowed_ip_ranges) {
-            ranges.push({value: v})
-          }
-          if (ranges.length === 0) {
-            ranges.push({value: ''})
-          }
-          data.allowed_ip_ranges = ranges
+          // let ranges = []
+          // for (let v of data.allowed_ip_ranges) {
+          //   ranges.push({value: v})
+          // }
+          // if (ranges.length === 0) {
+          //   ranges.push({value: ''})
+          // }
+          // data.allowed_ip_ranges = ranges
           this.contest = data
         }).catch(() => {
         })

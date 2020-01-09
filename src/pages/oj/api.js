@@ -178,6 +178,18 @@ export default {
       }
     })
   },
+  getContestClarificationList (contestId) {
+    return ajax('contest/clarification', 'get', {
+      params: {
+        contest_id: contestId
+      }
+    })
+  },
+  submitClarification (data) {
+    return ajax('contest/clarification', 'post', {
+      data
+    })
+  },
   getContestProblemList (contestId) {
     return ajax('contest/problem', 'get', {
       params: {
@@ -251,6 +263,13 @@ export default {
   getContestRank (params) {
     return ajax('contest_rank', 'get', {
       params
+    })
+  },
+  getContestMyRank (id) {
+    return ajax('contest_rank/myrank', 'get', {
+      params: {
+        id
+      }
     })
   },
   getACMACInfo (params) {

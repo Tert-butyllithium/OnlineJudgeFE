@@ -1,6 +1,6 @@
 <template>
   <panel shadow>
-    <div slot="title">ACM Helper</div>
+    <div slot="title">Balloon Helper</div>
     <div slot="extra">
       <ul class="filter">
         <li>
@@ -38,6 +38,7 @@
         page: 1,
         total: 0,
         loadingTable: false,
+        staticColors: ['orange', 'pink', 'silver', 'black', 'yellow', 'red', 'blue', 'green', 'purple'],
         columns: [
           {
             title: 'AC Time',
@@ -47,6 +48,11 @@
             title: 'ProblemID',
             align: 'center',
             key: 'problem_display_id'
+          },
+          {
+            title: 'Color',
+            align: 'center',
+            key: 'color'
           },
           {
             title: 'First Blood',
@@ -162,6 +168,7 @@
         api.getACMACInfo(params).then(res => {
           this.loadingTable = false
           let data = res.data.data
+          // console.log(data)
           this.total = data.length
           this.acInfo = data
           this.handlePage()
@@ -204,6 +211,11 @@
             v.init = true
             v.problem_display_id = this.problemsMap[v.problem_id]
             v.ac_time = moment(this.contest.start_time).add(v.ac_info.ac_time, 'seconds').local().format('YYYY-M-D  HH:mm:ss')
+            let z = (v.problem_display_id.charCodeAt(0) - 65)
+            // console.log(v.problem_display_id[0])
+            v.color = this.staticColors[z % this.staticColors.length]
+            v.cellClassName = {}
+            v.cellClassName.color = v.color
           }
         }
         this.pagedAcInfo = pageInfo

@@ -98,6 +98,7 @@ export const m = {
   Contest_Rule_Type: '规则',
   Real_Time_Rank: '实时Rank',
   Contest_Status: '状态',
+  Frozen_time: '封榜时间（分钟）',
   Allowed_IP_Ranges: '允许的IP范围',
   CIDR_Network: 'CIDR Network',
   // Dashboard.vue

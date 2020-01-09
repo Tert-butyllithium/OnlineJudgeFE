@@ -264,11 +264,10 @@ export default {
       data
     })
   },
-  deleteContestProblem (id) {
+  deleteContestProblem (params) {
+    params = utils.filterEmptyValue(params)
     return ajax('admin/contest/problem', 'delete', {
-      params: {
-        id
-      }
+      params
     })
   },
   makeContestProblemPublic (data) {

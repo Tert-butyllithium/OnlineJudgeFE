@@ -60,6 +60,7 @@ export const m = {
   Refresh: 'Refresh',
   Back: 'Back',
   No_Announcements: 'No Announcements',
+  No_Clarifications: 'No Clarifications',
   // Setting.vue
   Profile: 'Profile',
   Account: 'Account',
@@ -83,6 +84,7 @@ export const m = {
   UserLogin: 'Login',
   // Register.vue
   RegisterUsername: 'Username',
+  Send: 'Send',
   Email_Address: 'Email Address',
   RegisterPassword: 'Password',
   Password_Again: 'Password Again',

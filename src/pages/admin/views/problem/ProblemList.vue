@@ -197,11 +197,14 @@
         })
       },
       deleteProblem (id) {
+        let param = Object.assign({})
+        param.id = id
+        param.contest_id = this.contestId
         this.$confirm('Sure to delete this problem? The associated submissions will be deleted as well.', 'Delete Problem', {
           type: 'warning'
         }).then(() => {
           let funcName = this.routeName === 'problem-list' ? 'deleteProblem' : 'deleteContestProblem'
-          api[funcName](id).then(() => [
+          api[funcName](param).then(() => [
             this.getProblemList(this.currentPage - 1)
           ]).catch(() => {
           })

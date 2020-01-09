@@ -6,7 +6,7 @@ import { Announcement, Conf, Contest, ContestList, Home, JudgeServer, Login,
 Vue.use(VueRouter)
 
 export default new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: '/admin/',
   scrollBehavior: () => ({y: 0}),
   routes: [
@@ -93,6 +93,11 @@ export default new VueRouter({
           path: '/contest/:contestId/problems',
           name: 'contest-problem-list',
           component: ProblemList
+        },
+        {
+          path: '/contest/:contestId/clarification',
+          name: 'contest-clarification-list',
+          component: Announcement
         },
         {
           path: '/contest/:contestId/problem/create',

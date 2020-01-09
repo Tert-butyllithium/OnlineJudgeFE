@@ -9,7 +9,7 @@ import {types, default as store} from '../../../store'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition

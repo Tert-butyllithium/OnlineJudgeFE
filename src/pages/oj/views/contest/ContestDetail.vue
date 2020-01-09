@@ -51,6 +51,12 @@
           {{$t('m.Problems')}}
         </VerticalMenu-item>
 
+        <VerticalMenu-item :disabled="contestMenuDisabled"
+                           :route="{name: 'contest-clarification-list', params: {contestID: contestID}}">
+          <Icon type="chatbubbles"></Icon>
+          {{$t('m.Clarification')}}
+        </VerticalMenu-item>
+
         <VerticalMenu-item v-if="OIContestRealTimePermission"
                            :disabled="contestMenuDisabled"
                            :route="{name: 'contest-submission-list'}">

@@ -97,9 +97,11 @@ export const m = {
   Contest_Password: 'Password',
   Contest_Rule_Type: 'Contest Rule Type',
   Real_Time_Rank: 'Real Time Rank',
-  Contest_Status: 'Status',
+  Contest_Status: 'Visible',
+  Frozen_time: 'Frozen Time (in minutes）',
   Allowed_IP_Ranges: 'Allowed IP Ranges',
   CIDR_Network: 'CIDR Network',
+  Clarification: 'Clarification',
   // Dashboard.vue
   Last_Login: 'Last Login',
   System_Overview: 'System Overview',
