@@ -11,7 +11,7 @@ const options = {
     // Firefox extensions
     /^resource:\/\//i,
     // Ignore Google flakiness
-    /\/(gtm|ga|analytics)\.js/i
+    // /\/(gtm|ga|analytics)\.js/i
   ]
 }
 

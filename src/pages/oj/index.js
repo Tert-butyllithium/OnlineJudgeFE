@@ -7,8 +7,8 @@ import i18n from '@/i18n'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueClipboard from 'vue-clipboard2'
-import VueAnalytics from 'vue-analytics'
-import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
+// import VueAnalytics from 'vue-analytics'
+// import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
 
 import iView from 'iview'
 import locale from 'iview/dist/locale/en-US'
@@ -47,10 +47,10 @@ Vue.use(Element, {locale})
 Vue.use(VueClipboard)
 Vue.use(highlight)
 Vue.use(katex)
-Vue.use(VueAnalytics, {
-  id: GOOGLE_ANALYTICS_ID,
-  router
-})
+// Vue.use(VueAnalytics, {
+//   id: GOOGLE_ANALYTICS_ID,
+//   router
+// })
 
 Vue.component('ECharts', ECharts)
 Vue.component(VerticalMenu.name, VerticalMenu)
